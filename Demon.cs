@@ -20,6 +20,7 @@ namespace ConsoleSlayer
         public bool Alive { get; set; }
         public int SightRange { get; set; }
         public int AttackRange { get; set; }
+        public int Speed {  get; set; }
 
         public Demon(int x, int y, DemonType type)
         {
@@ -63,6 +64,7 @@ namespace ConsoleSlayer
                     Health = 20;
                     SightRange = 3;
                     AttackRange = 1;
+                    Speed = 70;
                     Sprite = new ConsoleSprite(ConsoleColor.Black, ConsoleColor.Gray, 'o');
                     break;
 
@@ -71,6 +73,7 @@ namespace ConsoleSlayer
                     Health = 60;
                     SightRange = 6;
                     AttackRange = 3;
+                    Speed = 93;
                     Sprite = new ConsoleSprite(ConsoleColor.Black, ConsoleColor.Red, 'o');
                     break;
 
@@ -79,6 +82,7 @@ namespace ConsoleSlayer
                     Health = 600;
                     SightRange = 9;
                     AttackRange = 6;
+                    Speed = 70;
                     Sprite = new ConsoleSprite(ConsoleColor.Black, ConsoleColor.Magenta, 'O');
                     break;
             }

@@ -68,6 +68,9 @@ namespace ConsoleSlayer
                     case ConsoleKey.A:
                         GameLogic.PlayerAttackLogic();
                         break;
+                    case ConsoleKey.S:
+                        GameLogic.PlayerBFGAttackLogic();
+                        break;
                 }
             }
             GameLogic.PlayerIndirectInteractionLogic();

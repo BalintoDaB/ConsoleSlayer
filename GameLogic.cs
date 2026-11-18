@@ -38,6 +38,27 @@ namespace ConsoleSlayer
             }
         }
 
+        public void PlayerBFGAttackLogic()
+        {
+            if (Game.Player.BFGCells != 0)
+            {
+                Game.Player.ShootBFG();
+                List<Demon> demons = GetDemonsWithinDistance(Game.Player.Position, Game.Player.SightRange);
+                Random RNG = new Random();
+                foreach (var item in demons)
+                {
+                    item.TakeDamage((int)RNG.Next(100,800));
+                    Game.PlaySoundEffect(SoundEffectType.BFG);
+                    if (!item.Alive)
+                    {
+                        if (item.Type == DemonType.Zombieman) Game.Player.AddCombatPoints(1);
+                        if (item.Type == DemonType.Imp) Game.Player.AddCombatPoints(1);
+                        if (item.Type == DemonType.Mancubus) Game.Player.AddCombatPoints(1);
+                    }
+                }
+            }
+        }
+
         private void DemonAttackLogic(Demon demon)
         {
             float d = Position.Distance(Game.Player.Position, demon.Position);
@@ -171,6 +192,11 @@ namespace ConsoleSlayer
                     case ItemType.Ammo:
                         item.Interact();
                         Game.Player.PickUpAmmo(5);
+                        Game.PlaySoundEffect(SoundEffectType.ItemPickup);
+                        break;
+                    case ItemType.BFGCell:
+                        item.Interact();
+                        Game.Player.PickUpBFGCell(1);
                         Game.PlaySoundEffect(SoundEffectType.ItemPickup);
                         break;
                     case ItemType.Medikit:

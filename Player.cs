@@ -24,6 +24,19 @@ namespace ConsoleSlayer
             get => _ammo;
             set => _ammo = Math.Clamp(value, 0, MaxAmmo);
         }
+        private int _BFGCells;
+        public int BFGCells
+        {
+            get => _BFGCells;
+            set => _BFGCells = Math.Clamp(value, 0, MaxBFGCells);
+        }
+        public int MaxBFGCells
+        {
+            get
+            {
+                return 3;
+            }
+        }
         public bool Alive { get; set; }
         public int CombatPoints { get; set; }
         public int MaxHealth 
@@ -58,6 +71,11 @@ namespace ConsoleSlayer
             Ammo--;
         }
 
+        public void ShootBFG()
+        {
+            BFGCells--;
+        }
+
         public void AddCombatPoints(int CPToAdd)
         {
             CombatPoints += CPToAdd;
@@ -78,5 +96,10 @@ namespace ConsoleSlayer
         {
             Health += count;
         }
+
+        public void PickUpBFGCell(int count)
+        {
+            BFGCells += count;
+        }   
     }
 }

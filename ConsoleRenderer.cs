@@ -23,6 +23,7 @@ namespace ConsoleSlayer
 
         public void RenderGame()
         {
+            
             Console.CursorVisible = false;
             Console.ResetColor();
             Console.Clear();
@@ -35,6 +36,15 @@ namespace ConsoleSlayer
                 RenderSingleSprite(demon.Position, demon.Sprite);
             }
             RenderSingleSprite(Game.Player.Position, Game.Player.Sprite);
+            RenderHUD();
+        }
+
+        private void RenderHUD()
+        {
+            Console.SetCursorPosition(0, Console.WindowHeight-1);
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine($"Ammo: {Game.Player.Ammo}\tHp: {Game.Player.Health}\tCell: {Game.Player.BFGCells}\tXp: {Game.Player.CombatPoints}");
         }
 
         public ConsoleRenderer(Game game)
