@@ -142,7 +142,6 @@ namespace ConsoleSlayer
             PlayMusic("sound/music.mp3");
             while (!Exited && Player.Alive)
             {
-                // A logika a két frissítés között ténylegesen eltelt időt kapja meg (ms)
                 long deltaT = StopwatchLogic.ElapsedMilliseconds;
                 if (deltaT > 500)
                 {

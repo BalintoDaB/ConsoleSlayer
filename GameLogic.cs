@@ -55,8 +55,6 @@ namespace ConsoleSlayer
                 }
             }
         }
-
-        // deltaT: a két frissítési lépés között eltelt idő ezredmásodpercben
         private void DemonAttackLogic(Demon demon, long deltaT)
         {
             float d = Position.Distance(Game.Player.Position, demon.Position);
@@ -64,7 +62,6 @@ namespace ConsoleSlayer
             if (demon.Type == DemonType.Zombieman) rng = RNG.Next(3, 15);
             if (demon.Type == DemonType.Imp) rng = RNG.Next(3, 24);
             if (demon.Type == DemonType.Mancubus) rng = RNG.Next(8, 64);
-            // A táblázatbeli sebzés egy másodpercre vonatkozik, ezért skálázzuk az eltelt idővel
             float dmg = (2 * rng) / (1 + d) * (deltaT / 1000f);
             Game.Player.TakeDamage((int)dmg);
             Game.PlaySoundEffect(SoundEffectType.Pain);
@@ -134,10 +131,8 @@ namespace ConsoleSlayer
             player.Position = position;
         }
 
-        // deltaT: a két mozgatási lépés között eltelt idő ezredmásodpercben
         public void Move(Demon demon, Position position, long deltaT)
         {
-            // A gyorsaságból számított valószínűséggel mozdul csak el
             double pMove = (demon.Speed / 100.0) * (deltaT / 1000.0);
             if (RNG.NextDouble() >= pMove) return;
 
@@ -231,8 +226,6 @@ namespace ConsoleSlayer
 
             }
         }
-
-        // deltaT: a két frissítési lépés között eltelt idő ezredmásodpercben
         public void UpdateGameState(long deltaT)
         {
             UpdateDemons(deltaT);

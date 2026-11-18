@@ -12,7 +12,6 @@ namespace ConsoleSlayer
 
         private void RenderSingleSprite(Position pos, ConsoleSprite sprite)
         {
-            // Az utolsó sor a HUD-é, oda nem rajzolunk sprite-ot
             if (pos.x < 0 || pos.y < 0 ||
                 pos.x >= Console.WindowWidth || pos.y >= Console.WindowHeight - 1)
                 return;
@@ -22,7 +21,6 @@ namespace ConsoleSlayer
             Console.Write(sprite.Glyph);
         }
 
-        // Igaz, ha a pozíció a játékos látótávolságán belül van
         private bool IsWithinSight(Position pos)
         {
             return Position.Distance(Game.Player.Position, pos) <= Game.Player.SightRange;
@@ -31,7 +29,8 @@ namespace ConsoleSlayer
         public void RenderGame()
         {
             Console.CursorVisible = false;
-            Console.ResetColor();
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.Clear();
             foreach (var item in Game.Items)
             {
@@ -55,9 +54,6 @@ namespace ConsoleSlayer
 
             Player p = Game.Player;
             string text = $" Ammo: {p.Ammo}/{p.MaxAmmo} | HP: {p.Health}/{p.MaxHealth} | BFG: {p.BFGCells}/{p.MaxBFGCells} | XP: {p.CombatPoints}";
-
-            // Az utolsó sor utolsó karakterének kiírása görgetné a képernyőt,
-            // ezért legfeljebb (width - 1) karaktert írunk ki, a végéig kipótolva szóközökkel
             if (text.Length > width - 1) text = text.Substring(0, width - 1);
             text = text.PadRight(width - 1);
 
@@ -65,7 +61,8 @@ namespace ConsoleSlayer
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Black;
             Console.Write(text);
-            Console.ResetColor();
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
 
         public ConsoleRenderer(Game game)
