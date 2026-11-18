@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +9,7 @@ namespace ConsoleSlayer
     public class GameLogic
     {
         public Game Game { get; set; }
+        private readonly Random RNG = new Random();
 
         public GameLogic(Game game) 
         { 
@@ -21,7 +22,6 @@ namespace ConsoleSlayer
             {
                 Game.Player.Shoot();
                 List<Demon> demons = GetDemonsWithinDistance(Game.Player.Position, Game.Player.SightRange);
-                Random RNG = new Random();
                 foreach (var item in demons)
                 {
                     float d = Position.Distance(Game.Player.Position, item.Position);
@@ -44,30 +44,25 @@ namespace ConsoleSlayer
             {
                 Game.Player.ShootBFG();
                 List<Demon> demons = GetDemonsWithinDistance(Game.Player.Position, Game.Player.SightRange);
-                Random RNG = new Random();
                 foreach (var item in demons)
                 {
-                    item.TakeDamage((int)RNG.Next(100,800));
+                    item.TakeDamage(RNG.Next(100, 800));
                     Game.PlaySoundEffect(SoundEffectType.BFG);
                     if (!item.Alive)
                     {
-                        if (item.Type == DemonType.Zombieman) Game.Player.AddCombatPoints(1);
-                        if (item.Type == DemonType.Imp) Game.Player.AddCombatPoints(1);
-                        if (item.Type == DemonType.Mancubus) Game.Player.AddCombatPoints(1);
+                        Game.Player.AddCombatPoints(1);
                     }
                 }
             }
         }
-
-        private void DemonAttackLogic(Demon demon)
+        private void DemonAttackLogic(Demon demon, long deltaT)
         {
             float d = Position.Distance(Game.Player.Position, demon.Position);
             float rng = 0;
-            Random RNG = new Random();
             if (demon.Type == DemonType.Zombieman) rng = RNG.Next(3, 15);
             if (demon.Type == DemonType.Imp) rng = RNG.Next(3, 24);
             if (demon.Type == DemonType.Mancubus) rng = RNG.Next(8, 64);
-            float dmg = (2 * rng) / (1 + d);
+            float dmg = (2 * rng) / (1 + d) * (deltaT / 1000f);
             Game.Player.TakeDamage((int)dmg);
             Game.PlaySoundEffect(SoundEffectType.Pain);
         }
@@ -136,28 +131,30 @@ namespace ConsoleSlayer
             player.Position = position;
         }
 
-        public void Move(Demon demon, Position position)
+        public void Move(Demon demon, Position position, long deltaT)
         {
+            double pMove = (demon.Speed / 100.0) * (deltaT / 1000.0);
+            if (RNG.NextDouble() >= pMove) return;
+
             if ((GetTotalFillingRatio(position) + demon.FillingRatio) > 1.0) return;
             demon.Position = position;
         }
 
-        private void DemonMoveLogic(Demon demon)
+        private void DemonMoveLogic(Demon demon, long deltaT)
         {
-            Random RNG = new Random();
             int x = demon.Position.x + RNG.Next(-1, 2); // -1, 0, 1
             int y = demon.Position.y + RNG.Next(-1, 2);
             Position targetPosition = new Position(x, y);
-            Move(demon, targetPosition);
+            Move(demon, targetPosition, deltaT);
         }
 
-        private void UpdateDemons()
+        private void UpdateDemons(long deltaT)
         {
             foreach (var demon in Game.Demons)
             {
                 demon.UpdateState(Game.Player);
-                if (demon.State == DemonStateType.Move) DemonMoveLogic(demon);
-                if (demon.State == DemonStateType.Attack) DemonAttackLogic(demon);
+                if (demon.State == DemonStateType.Move) DemonMoveLogic(demon, deltaT);
+                if (demon.State == DemonStateType.Attack) DemonAttackLogic(demon, deltaT);
                 DemonIndirectInteractionLogic(demon);
             }
         }
@@ -229,10 +226,9 @@ namespace ConsoleSlayer
 
             }
         }
-
-        public void UpdateGameState()
+        public void UpdateGameState(long deltaT)
         {
-            UpdateDemons();
+            UpdateDemons(deltaT);
             CleanUpGameItems();
             CleanUpDemons();
         }

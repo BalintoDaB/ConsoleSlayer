@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using WMPLib;
@@ -142,9 +142,10 @@ namespace ConsoleSlayer
             PlayMusic("sound/music.mp3");
             while (!Exited && Player.Alive)
             {
-                if (StopwatchLogic.ElapsedMilliseconds > 500)
+                long deltaT = StopwatchLogic.ElapsedMilliseconds;
+                if (deltaT > 500)
                 {
-                    GameLogic.UpdateGameState();
+                    GameLogic.UpdateGameState(deltaT);
                     StopwatchLogic.Restart();
                 }
                 if (StopwatchRenderer.ElapsedMilliseconds > 25)
